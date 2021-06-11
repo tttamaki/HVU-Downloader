@@ -64,12 +64,14 @@ def download_clip(video_identifier, output_filename,
     # Construct command line for getting the direct video link.
     command = ['youtube-dl',
                '--force-ipv4',
-               '--quiet', '--no-warnings',
+               # '--quiet',
+               # '--no-warnings',
                '-f', 'mp4',
                '-o', '"%s"' % output_filename,
                '"%s"' % (url_base + video_identifier)]
     command = ' '.join(command)
     attempts = 0
+    print(command)
     while True:
         try:
             output = subprocess.check_output(command, shell=True,
@@ -77,12 +79,13 @@ def download_clip(video_identifier, output_filename,
         except subprocess.CalledProcessError as err:
             attempts += 1
             if attempts == num_attempts:
+                print(err.output)
                 return status, err.output
         else:
             break
     # Check if the video was successfully saved.
     status = os.path.exists(output_filename)
-    os.remove(tmp_filename)
+    # os.remove(tmp_filename)
     return status, 'Downloaded'
 
 
